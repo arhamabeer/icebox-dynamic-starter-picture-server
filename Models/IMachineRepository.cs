@@ -2,6 +2,7 @@
 {
     public interface IMachineRepository
     {
-        public string GetDisplayBackground(string ip);
+        public Task<string> GetDisplayBackground(string ip);
+        public Task<Machine> UpdateMachineDisplayBackground(string ip, string imgUrl);
     }
 }
