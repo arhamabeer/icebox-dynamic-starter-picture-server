@@ -6,34 +6,52 @@ namespace icebox_dynamic_starter_picture_server.Models
     {
         private readonly ApplicationDbContext _context;
 
-        private List<Images> _images;
-
         public MachineRepository(ApplicationDbContext applicationDbContext) {
-            _images = new List<Images>();
-
-            // Add items to the list
-            _images.Add(new Images { Image = "image1.jpg", Type = "Eid" });
-            _images.Add(new Images { Image = "image2.jpg", Type = "Ramadan" });
-            _images.Add(new Images { Image = "image3.jpg", Type = "New Year" });
-            _images.Add(new Images { Image = "image4.jpg", Type = "Default" });
-
+            _context = applicationDbContext;
 
         }
 
-        public string GetDisplayBackground(string ip)
+        public async Task<string> GetDisplayBackground(string ip)
         {
-            if (string.IsNullOrEmpty(ip))
+
+            if (string.IsNullOrWhiteSpace(ip))
             {
-                var img = _images.FirstOrDefault(x => x.Type == "Default");
-                return img.Image;
+                var result = await _context.Images.FirstOrDefaultAsync(x => x.ImageId == 5);
+                return result.Path;
             }
-            if(ip == "192.168.0.1")
+            var res = await _context.Machines.FirstOrDefaultAsync(x => x.Ip == ip);
+            if (res == null) {
+                return $"We cannot find the machine allocated to your IP: {ip}";
+            }
+            var img_res = await _context.Images.FirstOrDefaultAsync(x=> x.ImageId == res.ImageId);
+            return img_res.Path;
+        }
+
+        public async Task<Machine> UpdateMachineDisplayBackground(string ip, string imgUrl)
+        {
+            
+            if (string.IsNullOrWhiteSpace(ip))
             {
-                var img1 = _images.FirstOrDefault(x => x.Type == "Eid");
-                return img1.Image;
+                return null;
             }
-            var img2 = _images.FirstOrDefault(x => x.Type == "Default");
-            return img2.Image;
+            if (string.IsNullOrEmpty(imgUrl))
+            {
+                return null;
+
+            }
+            var res = await _context.Machines.FirstOrDefaultAsync(x => x.Ip == ip);
+            if (res == null) 
+            {
+                return null;
+            }
+            var img_res = await _context.Images.FirstOrDefaultAsync(x=> x.Path == imgUrl);
+            if(img_res != null)
+            {
+                res.ImageId = img_res.ImageId;
+                await _context.SaveChangesAsync();
+                return res;
+            }
+            return res;
         }
     }
 }
