@@ -22,7 +22,8 @@ namespace icebox_dynamic_starter_picture_server.Controllers
                 {
                     return NotFound();
                 }
-                return Ok(res);
+                var url = res.Replace("%2F", "/");
+                return Ok(url);
             }catch(Exception ex)
             {
                 return StatusCode(501, new
@@ -33,7 +34,7 @@ namespace icebox_dynamic_starter_picture_server.Controllers
             }
         }
 
-        [HttpGet("{ip=string}/{imgUrl=string}")]
+        [HttpPost("{ip=string}/{imgUrl=string}")]
         public async Task<ActionResult> UpdateMachineDisplayBackground(string ip, string imgUrl) {
             try
             {
@@ -54,7 +55,7 @@ namespace icebox_dynamic_starter_picture_server.Controllers
             }
         }
 
-        [HttpGet("{path}/{type}")]
+        [HttpPost("{path}/{type}")]
         public async Task<ActionResult> AddNewImage(string path, string type)
         {
             try
