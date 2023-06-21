@@ -4,5 +4,6 @@
     {
         public Task<string> GetDisplayBackground(string ip);
         public Task<Machine> UpdateMachineDisplayBackground(string ip, string imgUrl);
+        public Task<string> AddNewDisplayBackground(string path, string type);
     }
 }

@@ -11,6 +11,23 @@ namespace icebox_dynamic_starter_picture_server.Models
 
         }
 
+        public async Task<string> AddNewDisplayBackground(string path, string type)
+        {
+            if(string.IsNullOrEmpty(path) || string.IsNullOrEmpty(type)) {
+                return "001";
+            }
+            if(await _context.Images.AnyAsync(x => x.Path == path) || await _context.Images.AnyAsync(x=> x.Type == type))
+            {
+                return "002";
+            }
+            var img = new Images { Path = path, Type = type };
+           await _context.Images.AddAsync(img);
+            var res = await _context.SaveChangesAsync();
+
+            if (res > 0) return "003";
+            return "004";
+        }
+
         public async Task<string> GetDisplayBackground(string ip)
         {
 
@@ -24,6 +41,7 @@ namespace icebox_dynamic_starter_picture_server.Models
                 return $"We cannot find the machine allocated to your IP: {ip}";
             }
             var img_res = await _context.Images.FirstOrDefaultAsync(x=> x.ImageId == res.ImageId);
+            if (img_res == null) return null;
             return img_res.Path;
         }
 
