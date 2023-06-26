@@ -9,6 +9,7 @@ namespace icebox_dynamic_starter_picture_server.Models
 
         public string Path { get; set; }
         public string Type { get; set; }
+        public bool isDeleted { get; set; }
 
     }
 }

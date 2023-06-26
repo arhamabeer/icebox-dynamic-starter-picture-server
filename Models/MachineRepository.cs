@@ -45,6 +45,32 @@ namespace icebox_dynamic_starter_picture_server.Models
             return img_res.Path;
         }
 
+        public async Task<string> RemoveDisplayBackground(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                return null;
+            }
+
+            Images img_res = await _context.Images.FirstOrDefaultAsync(x => x.Path == path);
+            if (img_res == null)
+            {
+                return null;
+            }
+            img_res.isDeleted = true;
+            var res = await _context.SaveChangesAsync();
+            if (res > 0)
+            {
+                return "OK";
+            }
+            return null;
+        }
+
+        public Task<string> UpdateBackground(Images images)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<Machine> UpdateMachineDisplayBackground(string ip, string imgUrl)
         {
             
@@ -71,5 +97,8 @@ namespace icebox_dynamic_starter_picture_server.Models
             }
             return res;
         }
+
+        
+
     }
 }

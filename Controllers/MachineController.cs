@@ -74,5 +74,28 @@ namespace icebox_dynamic_starter_picture_server.Controllers
                 });
             }
         }
+
+        [HttpPost("{path}")]
+        public async Task<ActionResult> DeleteImage(string path)
+        {
+            try
+            {
+                var res = await _machine.RemoveDisplayBackground(path);
+                if(res == null)
+                {
+                    return BadRequest();
+                }
+                return Ok(res);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(501, new
+                {
+                    originalError = ex.Message,
+                    errorMessage = "Failed to delete Data from the Database."
+                });
+            }
+        }
+        
     }
 }
