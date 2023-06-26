@@ -1,4 +1,5 @@
-﻿using static System.Net.Mime.MediaTypeNames;
+﻿using System.IO;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace icebox_dynamic_starter_picture_server.Models
 {
@@ -66,9 +67,26 @@ namespace icebox_dynamic_starter_picture_server.Models
             return null;
         }
 
-        public Task<string> UpdateBackground(Images images)
+        public async Task<string> UpdateBackground(string existing_path, string new_type, string new_path)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(existing_path) || string.IsNullOrEmpty(new_type) || string.IsNullOrEmpty(new_path))
+            {
+                return null;
+            }
+
+            Images img_res = await _context.Images.FirstOrDefaultAsync(x => x.Path == existing_path);
+            if (img_res == null)
+            {
+                return null;
+            }
+            img_res.Path = new_path;
+            img_res.Type = new_type;
+            var res = await _context.SaveChangesAsync();
+            if (res > 0)
+            {
+                return "OK";
+            }
+            return null;
         }
 
         public async Task<Machine> UpdateMachineDisplayBackground(string ip, string imgUrl)

@@ -7,6 +7,6 @@
         public Task<string> AddNewDisplayBackground(string path, string type);
         public Task<string> RemoveDisplayBackground(string path);
 
-        public Task<string> UpdateBackground(Images images);
+        public Task<string> UpdateBackground(string pathexisting_path, string new_type, string new_path);
     }
 }

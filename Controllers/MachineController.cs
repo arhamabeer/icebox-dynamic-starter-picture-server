@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.IO;
 
 namespace icebox_dynamic_starter_picture_server.Controllers
 {
@@ -88,6 +89,28 @@ namespace icebox_dynamic_starter_picture_server.Controllers
                 return Ok(res);
             }
             catch(Exception ex)
+            {
+                return StatusCode(501, new
+                {
+                    originalError = ex.Message,
+                    errorMessage = "Failed to delete Data from the Database."
+                });
+            }
+        }
+
+        [HttpPost("{existing_path}/{new_type}/{new_path}")]
+        public async Task<ActionResult> UpdateImage(string existing_path, string new_type, string new_path)
+        {
+            try
+            {
+                var res = await _machine.UpdateBackground(existing_path, new_type, new_path);
+                if (res == null)
+                {
+                    return BadRequest();
+                }
+                return Ok(res);
+            }
+            catch (Exception ex)
             {
                 return StatusCode(501, new
                 {
